@@ -30,6 +30,24 @@ public class CarController {
         cars.add(vehicle);
     }
 
+    public List<Vehicle> getCars() {
+        return cars;
+    }
+
+    public void gas(int amount) {
+        double gas = ((double) amount) / 100;
+        for (Vehicle car : cars) {
+            car.gas(gas);
+        }
+    }
+
+    public void brake(int amount) {
+        double brake = ((double) amount)/100;
+        for (Vehicle car : cars) {
+            car.brake(brake);
+        }
+    }
+
     private class TimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             for (Vehicle car : cars) {
@@ -37,8 +55,8 @@ public class CarController {
                 checkBounds(car);
                 int x = (int) Math.round(car. getX());
                 int y = (int) Math.round(car. getY());
-                frame.drawPanel.moveit(car, x, y);
-                frame.drawPanel.repaint();
+                frame.getDrawPanel().moveit(car, x, y);
+                frame.getDrawPanel().repaint();
             }
         }
     }
@@ -58,13 +76,6 @@ public class CarController {
     private void reverseDirection(Vehicle car) {
         for (int i = 0; i < 2; i++) {
             car.turnLeft();
-        }
-    }
-
-    public void brake(int amount) {
-        double brake = ((double) amount)/100;
-        for (Vehicle car : cars) {
-            car.brake(brake);
         }
     }
 }

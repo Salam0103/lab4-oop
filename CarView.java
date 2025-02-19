@@ -45,6 +45,10 @@ public class CarView extends JFrame{
         initComponents(framename);
     }
 
+    public DrawPanel getDrawPanel(){
+        return drawPanel;
+    }
+
     // Sets everything in place and fits everything
     // TODO: Take a good look and make sure you understand how these methods and components work
     private void initComponents(String title) {
@@ -105,6 +109,75 @@ public class CarView extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 carC.gas(gasAmount);
+            }
+        });
+
+        brakeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                carC.gas(gasAmount);
+            }
+        });
+
+        turboOnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    if (car instanceof Saab95) {
+                        ((Saab95) car).setTurboOn();
+                    }
+                }
+            }
+        });
+
+        turboOffButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    if (car instanceof Saab95) {
+                        ((Saab95) car).setTurboOff();
+                    }
+                }
+            }
+        });
+
+        liftBedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    if (car instanceof Scania) {
+                        ((Scania) car).raiseFlak();
+                    }
+                }
+            }
+        });
+
+        lowerBedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    if (car instanceof Scania) {
+                        ((Scania) car).LowerFlak();
+                    }
+                }
+            }
+        });
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    car.startEngine();
+                }
+            }
+        });
+
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Vehicle car : carC.getCars()) {
+                    car.stopEngine();
+                }
             }
         });
 
