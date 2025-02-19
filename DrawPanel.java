@@ -40,6 +40,16 @@ public class DrawPanel extends JPanel{
         repaint();
     }
 
+    public void checkWorkshopCollision(Vehicle vehicle) {
+        if (vehicle instanceof Volvo240) {
+            Point vehiclePos = vehiclePositions.get(vehicle);
+            if (vehiclePos != null && vehiclePos.distance(volvoWorkshopPoint) < 50) {
+                System.out.println("Volvo loaded into workshop!");
+                vehiclePositions.remove(vehicle);
+            }
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
