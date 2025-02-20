@@ -13,6 +13,7 @@ public class CarController {
     private CarView frame;
     private final List<Vehicle> cars = new ArrayList<>();
     private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5);
+    private static CarController instance;
 
     public static void main(String[] args) {
         CarController cc = new CarController();
@@ -76,19 +77,40 @@ public class CarController {
         }
     }
 
+    public CarController() {
+        instance = this;
+    }
+
+    public static CarController getInstance() {
+        return instance;
+    }
+
+    public void removeCar(Vehicle vehicle) {
+        cars.remove(vehicle);
+    }
+
+
     private class TimerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            for (Vehicle car : cars) {
+            List<Vehicle> toRemove = new ArrayList<>();
+
+            for (Vehicle car : new ArrayList<>(cars)) {
                 car.move();
                 checkBounds(car);
-                int x = (int) Math.round(car. getX());
-                int y = (int) Math.round(car. getY());
+                int x = (int) Math.round(car.getX());
+                int y = (int) Math.round(car.getY());
                 frame.getDrawPanel().moveit(car, x, y);
                 frame.getDrawPanel().repaint();
-                frame.getDrawPanel().checkWorkshopCollision(car, volvoWorkshop);
+
+                if (frame.getDrawPanel().checkWorkshopCollision(car, volvoWorkshop)) {
+                    toRemove.add(car);
+                }
             }
+
+            cars.removeAll(toRemove);
         }
     }
+
 
     private void checkBounds(Vehicle car) {
         final int maxWidth = 800;

@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -23,7 +22,7 @@ public class DrawPanel extends JPanel{
 
         loadVehicleImages();
         volvoWorkshopPoint.x = x - volvoWorkshopImage.getWidth();  // Set x to right edge minus image width
-        volvoWorkshopPoint.y = 0;
+        volvoWorkshopPoint.y = 40;
     }
 
     private void loadVehicleImages() {
@@ -42,20 +41,23 @@ public class DrawPanel extends JPanel{
         repaint();
     }
 
-    public void checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
+    public boolean checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
         if (vehicle instanceof Volvo240) {
             Point vehiclePos = vehiclePositions.get(vehicle);
             if (vehiclePos != null && vehiclePos.distance(volvoWorkshopPoint) < 50) {
                 try {
                     workshop.loadCar((Volvo240) vehicle);
                     vehiclePositions.remove(vehicle);
+                    CarController.getInstance().removeCar(vehicle);  // Remove from CarController
                     System.out.println("Volvo lastad i Workshop!");
                 } catch (IllegalStateException ex) {
                     System.out.println("Workshop är full. Kan inte lasta fler bilar.");
                 }
             }
         }
+        return false;
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {
