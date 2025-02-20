@@ -22,7 +22,6 @@ public class DrawPanel extends JPanel{
         this.setBackground(Color.gray);
 
         loadVehicleImages();
-
     }
 
     private void loadVehicleImages() {
@@ -59,9 +58,8 @@ public class DrawPanel extends JPanel{
             Vehicle vehicle = entry.getKey();
             Point position = entry.getValue();
 
-            BufferedImage vehicleImage = vehicleImages.get(vehicle.getClass()); // Get correct image
+            BufferedImage vehicleImage = vehicleImages.get(vehicle.getClass());
             if (vehicleImage != null) {
-                // If the vehicle is facing West (or any direction you want to flip for)
                 if (vehicle.getDirection() == 3) {
                     // Flip the image horizontally
                     Graphics2D g2d = (Graphics2D) g;
