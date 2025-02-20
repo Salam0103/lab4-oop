@@ -40,12 +40,17 @@ public class DrawPanel extends JPanel{
         repaint();
     }
 
-    public void checkWorkshopCollision(Vehicle vehicle) {
+    public void checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
         if (vehicle instanceof Volvo240) {
             Point vehiclePos = vehiclePositions.get(vehicle);
             if (vehiclePos != null && vehiclePos.distance(volvoWorkshopPoint) < 50) {
-                System.out.println("Volvo loaded into workshop!");
-                vehiclePositions.remove(vehicle);
+                try {
+                    workshop.loadCar((Volvo240) vehicle);
+                    vehiclePositions.remove(vehicle);
+                    System.out.println("Volvo lastad i Workshop!");
+                } catch (IllegalStateException ex) {
+                    System.out.println("Workshop är full. Kan inte lasta fler bilar.");
+                }
             }
         }
     }

@@ -12,6 +12,7 @@ public class CarController {
     private boolean started = false;
     private CarView frame;
     private final List<Vehicle> cars = new ArrayList<>();
+    private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5);
 
     public static void main(String[] args) {
         CarController cc = new CarController();
@@ -37,6 +38,10 @@ public class CarController {
 
     public List<Vehicle> getCars() {
         return cars;
+    }
+
+    public VolvoWorkshop getVolvoWorkshop() {
+        return volvoWorkshop;
     }
 
     public void startAllVehicles() {
@@ -80,6 +85,7 @@ public class CarController {
                 int y = (int) Math.round(car. getY());
                 frame.getDrawPanel().moveit(car, x, y);
                 frame.getDrawPanel().repaint();
+                frame.getDrawPanel().checkWorkshopCollision(car, volvoWorkshop);
             }
         }
     }
