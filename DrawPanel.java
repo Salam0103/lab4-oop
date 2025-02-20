@@ -19,9 +19,10 @@ public class DrawPanel extends JPanel{
     public DrawPanel(int x, int y) {
         this.setDoubleBuffered(true);
         this.setPreferredSize(new Dimension(x, y));
-        this.setBackground(Color.green);
+        this.setBackground(Color.gray);
 
         loadVehicleImages();
+
     }
 
     private void loadVehicleImages() {
@@ -60,7 +61,20 @@ public class DrawPanel extends JPanel{
 
             BufferedImage vehicleImage = vehicleImages.get(vehicle.getClass()); // Get correct image
             if (vehicleImage != null) {
-                g.drawImage(vehicleImage, position.x, position.y, null);
+                // If the vehicle is facing West (or any direction you want to flip for)
+                if (vehicle.getDirection() == 3) {
+                    // Flip the image horizontally
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.drawImage(vehicleImage,
+                            position.x + vehicleImage.getWidth() / 2,
+                            position.y,
+                            -vehicleImage.getWidth(),
+                            vehicleImage.getHeight(),
+                            this);
+                } else {
+                    // Normal drawing if not facing West
+                    g.drawImage(vehicleImage, position.x, position.y, null);
+                }
             }
         }
 

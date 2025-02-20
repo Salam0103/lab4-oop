@@ -99,7 +99,7 @@ public abstract class Vehicle implements Movable{
     }
 
     private void decrementSpeed(double amount){
-        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount,0);
+        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount * 3,0);
     }
 
     public void gas(double amount){

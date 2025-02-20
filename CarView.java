@@ -92,30 +92,33 @@ public class CarView extends JFrame{
         controlPanel.setBackground(Color.CYAN);
 
 
-        startButton.setBackground(Color.blue);
-        startButton.setForeground(Color.green);
+        startButton.setBackground(Color.green);
+        startButton.setForeground(Color.white);
         startButton.setPreferredSize(new Dimension(X/5-15,200));
         this.add(startButton);
 
 
         stopButton.setBackground(Color.red);
-        stopButton.setForeground(Color.black);
+        stopButton.setForeground(Color.white);
         stopButton.setPreferredSize(new Dimension(X/5-15,200));
         this.add(stopButton);
 
-        // This actionListener is for the gas button only
-        // TODO: Create more for each component as necessary
+
+
+
         gasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                carC.gas(gasAmount);
+                if (carC.CarStart()) {
+                    carC.gas(gasAmount);
+                }
             }
         });
 
         brakeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                carC.gas(gasAmount);
+                carC.brake(gasAmount);
             }
         });
 
@@ -166,18 +169,15 @@ public class CarView extends JFrame{
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Vehicle car : carC.getCars()) {
-                    car.startEngine();
+                    carC.startAllVehicles();
                 }
-            }
+
         });
 
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Vehicle car : carC.getCars()) {
-                    car.stopEngine();
-                }
+                carC.stopAllVehicles();
             }
         });
 
