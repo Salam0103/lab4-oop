@@ -22,6 +22,8 @@ public class DrawPanel extends JPanel{
         this.setBackground(Color.gray);
 
         loadVehicleImages();
+        volvoWorkshopPoint.x = x - volvoWorkshopImage.getWidth();  // Set x to right edge minus image width
+        volvoWorkshopPoint.y = 0;
     }
 
     private void loadVehicleImages() {
