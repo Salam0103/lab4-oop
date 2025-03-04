@@ -4,110 +4,112 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class CarController {
-    private final int delay = 50;
-    private Timer timer = new Timer(delay, new TimerListener());
-    private boolean started = false;
-    private CarView frame;
-    private final List<Vehicle> cars = new ArrayList<>();
-    private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5);
-    private static CarController instance;
-
+    private final int delay = 50; // Timer delay
+    private Timer timer; // Timer for animation
+    private boolean started = false; // Tracks if vehicles are started
+    private CarView frame; // The main UI frame
+    private final VehicleManager vehicleManager = new VehicleManager(); // Manages vehicles
+    private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5); // Workshop for Volvo cars
+    private static CarController instance; // Singleton instance
+    private final WorkshopManager workshopManager = new WorkshopManager(5);
     public static void main(String[] args) {
         CarController cc = new CarController();
 
-        cc.addCar(new Volvo240());
-        cc.addCar(new Saab95());
-        cc.addCar(new Scania());
+        cc.addCar(VehicleFactory.createVehicle("volvo240"));
+        cc.addCar(VehicleFactory.createVehicle("saab95"));
+        cc.addCar(VehicleFactory.createVehicle("scania"));
 
+        // Initialize the UI and start the timer
         cc.frame = new CarView("CarSim 1.0", cc);
         cc.timer.start();
     }
 
-    private void addCar(Vehicle vehicle) {
-        int y = cars.size() * 100;
-        vehicle.setPosition(0, y);
 
-        while (vehicle.getDirection() != 1) {
-            vehicle.turnLeft();
-        }
-
-        cars.add(vehicle);
+    public void addCar(Vehicle vehicle) {
+        vehicleManager.addCar(vehicle);
     }
+
 
     public List<Vehicle> getCars() {
-        return cars;
+        return vehicleManager.getCars();
     }
+
+
+    public void startAllVehicles() {
+        started = true;
+        vehicleManager.startAllVehicles();
+    }
+
+
+    public void stopAllVehicles() {
+        started = false;
+        vehicleManager.stopAllVehicles();
+    }
+
+
+    public void gas(int amount) {
+        if (started) {
+            vehicleManager.gas(amount);
+        }
+    }
+
+
+    public void brake(int amount) {
+        vehicleManager.brake(amount);
+    }
+
+
+    public void removeCar(Vehicle vehicle) {
+        vehicleManager.removeCar(vehicle);
+    }
+
 
     public VolvoWorkshop getVolvoWorkshop() {
         return volvoWorkshop;
     }
 
-    public void startAllVehicles() {
-        started = true;
-        for (Vehicle car: cars) {
-            car.startEngine();
-        }
-    }
-
-    public boolean CarStart() {
-        return started;
-    }
-
-    public void stopAllVehicles() {
-        started = false;
-        for (Vehicle car: cars) {
-            car.stopEngine();
-        }
-    }
-
-    public void gas(int amount) {
-        double gas = ((double) amount) / 100;
-        for (Vehicle car : cars) {
-            car.gas(gas);
-        }
-    }
-
-    public void brake(int amount) {
-        double brake = ((double) amount)/100;
-        for (Vehicle car : cars) {
-            car.brake(brake);
-        }
-    }
-
-    public CarController() {
-        instance = this;
-    }
 
     public static CarController getInstance() {
         return instance;
     }
 
-    public void removeCar(Vehicle vehicle) {
-        cars.remove(vehicle);
+
+    public boolean isStarted() {
+        return started;
+    }
+
+
+    public CarController() {
+        instance = this;
+        timer = new Timer(delay, new TimerListener()); // Initialize timer with TimerListener
     }
 
 
     private class TimerListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             List<Vehicle> toRemove = new ArrayList<>();
 
-            for (Vehicle car : new ArrayList<>(cars)) {
+            // Create a copy of the vehicles list for iteration
+            for (Vehicle car : new ArrayList<>(vehicleManager.getCars())) {
                 car.move();
                 checkBounds(car);
+
+                // Update the vehicle's position in the UI
                 int x = (int) Math.round(car.getX());
                 int y = (int) Math.round(car.getY());
                 frame.getDrawPanel().moveit(car, x, y);
                 frame.getDrawPanel().repaint();
 
+                // Check for collisions with the workshop
                 if (frame.getDrawPanel().checkWorkshopCollision(car, volvoWorkshop)) {
                     toRemove.add(car);
                 }
             }
 
-            cars.removeAll(toRemove);
+            // Remove vehicles after iteration
+            vehicleManager.getCars().removeAll(toRemove);
         }
     }
 
@@ -118,21 +120,22 @@ public class CarController {
         int carWidth = 100;
         int carHeight = 60;
 
-       switch (car.getDirection()) {
-           case 1:
-               if (car.getX() + carWidth > maxWidth) {
-                   car.setPosition(maxWidth - carWidth, car.getY());
-                   reverseDirection(car);
-               }
-               break;
-           case 3:
-               if (car.getX() < 0) {
-                   car.setPosition(0, car.getY());
-                   reverseDirection(car);
-               }
-               break;
-       }
+        switch (car.getDirection()) {
+            case 1: // East
+                if (car.getX() + carWidth > maxWidth) {
+                    car.setPosition(maxWidth - carWidth, car.getY());
+                    reverseDirection(car);
+                }
+                break;
+            case 3: // West
+                if (car.getX() < 0) {
+                    car.setPosition(0, car.getY());
+                    reverseDirection(car);
+                }
+                break;
+        }
     }
+
 
     private void reverseDirection(Vehicle car) {
         for (int i = 0; i < 2; i++) {
@@ -140,5 +143,3 @@ public class CarController {
         }
     }
 }
-
-

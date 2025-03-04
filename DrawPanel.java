@@ -7,9 +7,9 @@ import javax.swing.*;
 import java.util.Map;
 
 // This panel represents the animated part of the view with the car images.
-public class DrawPanel extends JPanel{
-
-    private final Map< Vehicle, Point> vehiclePositions = new HashMap<>();
+public class DrawPanel extends JPanel {
+    private final VehicleRenderer vehicleRenderer = new VehicleRenderer();
+    private final Map<Vehicle, Point> vehiclePositions = new HashMap<>();
     private final Map<Class<? extends Vehicle>, BufferedImage> vehicleImages = new HashMap<>();
 
     BufferedImage volvoWorkshopImage;
