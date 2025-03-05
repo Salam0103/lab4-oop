@@ -41,7 +41,10 @@ public class DrawPanel extends JPanel {
         vehiclePositions.put(vehicle, new Point(x, y));
         repaint();  // Make sure the screen updates when positions change
     }
-
+    public void removeVehicle(Vehicle vehicle) {
+        vehiclePositions.remove(vehicle);
+        repaint(); // Refresh the panel
+    }
     public boolean checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
         if (vehicle instanceof Volvo240) {
             Point vehiclePos = vehiclePositions.get(vehicle);

@@ -12,44 +12,57 @@ public class CarController {
     private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5); // Workshop for Volvo cars
     private static CarController instance; // Singleton instance
     private final WorkshopManager workshopManager = new WorkshopManager(5);
+
     public static void main(String[] args) {
         CarController cc = new CarController();
 
+        // Initialize the UI first
+        cc.frame = new CarView("CarSim 1.0", cc);
+
+        // Add cars after the frame is initialized
         cc.addCar(VehicleFactory.createVehicle("volvo240"));
         cc.addCar(VehicleFactory.createVehicle("saab95"));
         cc.addCar(VehicleFactory.createVehicle("scania"));
 
-        // Initialize the UI and start the timer
-        cc.frame = new CarView("CarSim 1.0", cc);
+        // Start the timer
         cc.timer.start();
     }
 
 
     public void addCar(Vehicle vehicle) {
-        vehicleManager.addCar(vehicle);
+        if (vehicleManager.getCars().size() < 10) { // Check if there are fewer than 10 cars
+            int y = vehicleManager.getCars().size() * 100; // Position cars vertically
+            vehicle.setPosition(0, y); // Set initial position
+            while (vehicle.getDirection() != 1) { // Ensure the car is facing east
+                vehicle.turnLeft();
+            }
+            vehicleManager.addCar(vehicle); // Add the car to the list
+            frame.getDrawPanel().moveit(vehicle, 0, y); // Update the DrawPanel
+        }
     }
 
 
-    public List<Vehicle> getCars() {
-        return vehicleManager.getCars();
+    public void removeCar(Vehicle vehicle) {
+        if (vehicle != null && vehicleManager.getCars().contains(vehicle)) {
+            vehicleManager.removeCar(vehicle); // Remove the car from the list
+            frame.getDrawPanel().removeVehicle(vehicle); // Update the DrawPanel
+        }
     }
 
 
     public void startAllVehicles() {
-        // Set each vehicle to the StartedState
         for (Vehicle vehicle : vehicleManager.getCars()) {
             if (vehicle.getState() instanceof StoppedState) {
-                vehicle.startEngine();  // This will set the vehicle to StartedState
+                vehicle.startEngine(); // Start the engine of each car
             }
         }
     }
 
 
     public void stopAllVehicles() {
-        // Set each vehicle to the StoppedState
         for (Vehicle vehicle : vehicleManager.getCars()) {
             if (vehicle.getState() instanceof StartedState) {
-                vehicle.stopEngine();  // This will set the vehicle to StoppedState
+                vehicle.stopEngine(); // Stop the engine of each car
             }
         }
     }
@@ -69,8 +82,8 @@ public class CarController {
     }
 
 
-    public void removeCar(Vehicle vehicle) {
-        vehicleManager.removeCar(vehicle);
+    public List<Vehicle> getCars() {
+        return vehicleManager.getCars();
     }
 
 
@@ -82,6 +95,7 @@ public class CarController {
     public static CarController getInstance() {
         return instance;
     }
+
 
     public CarController() {
         instance = this;
@@ -145,6 +159,8 @@ public class CarController {
             car.turnLeft();
         }
     }
+
+
     public VehicleManager getVehicleManager() {
         return vehicleManager;
     }
