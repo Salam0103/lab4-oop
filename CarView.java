@@ -109,7 +109,7 @@ public class CarView extends JFrame{
         gasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (carC.isStarted()) { // Use isStarted() instead of CarStart()
+                if (carC.getVehicleManager().isAnyCarInState(StartedState.class)) { // Use isStarted() instead of CarStart()
                     carC.gas(gasAmount);
                 }
             }

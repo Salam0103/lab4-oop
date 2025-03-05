@@ -7,7 +7,6 @@ import java.util.List;
 public class CarController {
     private final int delay = 50; // Timer delay
     private Timer timer; // Timer for animation
-    private boolean started = false; // Tracks if vehicles are started
     private CarView frame; // The main UI frame
     private final VehicleManager vehicleManager = new VehicleManager(); // Manages vehicles
     private final VolvoWorkshop volvoWorkshop = new VolvoWorkshop(5); // Workshop for Volvo cars
@@ -37,20 +36,30 @@ public class CarController {
 
 
     public void startAllVehicles() {
-        started = true;
-        vehicleManager.startAllVehicles();
+        // Set each vehicle to the StartedState
+        for (Vehicle vehicle : vehicleManager.getCars()) {
+            if (vehicle.getState() instanceof StoppedState) {
+                vehicle.startEngine();  // This will set the vehicle to StartedState
+            }
+        }
     }
 
 
     public void stopAllVehicles() {
-        started = false;
-        vehicleManager.stopAllVehicles();
+        // Set each vehicle to the StoppedState
+        for (Vehicle vehicle : vehicleManager.getCars()) {
+            if (vehicle.getState() instanceof StartedState) {
+                vehicle.stopEngine();  // This will set the vehicle to StoppedState
+            }
+        }
     }
 
 
     public void gas(int amount) {
-        if (started) {
-            vehicleManager.gas(amount);
+        for (Vehicle vehicle : vehicleManager.getCars()) {
+            if (vehicle.getState() instanceof StartedState) {
+                vehicle.gas(amount);
+            }
         }
     }
 
@@ -73,12 +82,6 @@ public class CarController {
     public static CarController getInstance() {
         return instance;
     }
-
-
-    public boolean isStarted() {
-        return started;
-    }
-
 
     public CarController() {
         instance = this;
@@ -141,5 +144,8 @@ public class CarController {
         for (int i = 0; i < 2; i++) {
             car.turnLeft();
         }
+    }
+    public VehicleManager getVehicleManager() {
+        return vehicleManager;
     }
 }

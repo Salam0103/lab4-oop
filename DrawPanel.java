@@ -12,6 +12,7 @@ public class DrawPanel extends JPanel {
     private final Map<Vehicle, Point> vehiclePositions = new HashMap<>();
     private final Map<Class<? extends Vehicle>, BufferedImage> vehicleImages = new HashMap<>();
 
+
     BufferedImage volvoWorkshopImage;
     Point volvoWorkshopPoint = new Point(300,300);
 
@@ -37,8 +38,8 @@ public class DrawPanel extends JPanel {
     }
 
     public void moveit(Vehicle vehicle, int x, int y) {
-        vehiclePositions.put(vehicle, new Point(x,y));
-        repaint();
+        vehiclePositions.put(vehicle, new Point(x, y));
+        repaint();  // Make sure the screen updates when positions change
     }
 
     public boolean checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
@@ -85,6 +86,6 @@ public class DrawPanel extends JPanel {
             }
         }
 
-        g.drawImage(volvoWorkshopImage, volvoWorkshopPoint.x, volvoWorkshopPoint.y, null);
+        g.drawImage(volvoWorkshopImage, volvoWorkshopPoint.x, volvoWorkshopPoint.y, null);  // Ensure workshop is also visible
     }
 }

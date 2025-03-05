@@ -1,21 +1,21 @@
 import java.awt.*;
+import java.util.List;
+import java.util.Observable;
 
-public abstract class Vehicle implements VehicleActions{
+public abstract class Vehicle extends Observable implements VehicleActions{
 
-    private int nrDoors; // Number of doors on the car
-    private double enginePower; // Engine power of the car
-    private double currentSpeed; // The current speed of the car
-    private Color color; // Color of the car
-    private String modelName; // The car model name
-
-    private double x; // car's position on x-axis
-    private double y; // car's position on y-axis
+    private int nrDoors;
+    private double enginePower;
+    private double currentSpeed;
+    private Color color;
+    private String modelName;
+    private double x;
+    private double y;
     private int direction; // 0=North 1=East 2=South 3=West
+    private VehicleState state;
 
-    private VehicleState state = new StoppedState();
-    public void setState(VehicleState state) {
-        this.state = state;
-    }
+
+
 
     public Vehicle(int nrDoors, double enginePower, Color color, String modelName){
 
@@ -26,6 +26,7 @@ public abstract class Vehicle implements VehicleActions{
         this.x = 0; // Start position x
         this.y = 0; // Start position y
         this.direction = 0; // Start direction North
+        this.state = new StoppedState();
         stopEngine();
     }
 
@@ -39,6 +40,9 @@ public abstract class Vehicle implements VehicleActions{
 
     @Override
     public void move() {
+        setChanged();
+        notifyObservers();
+
         switch (direction) {
             case 0: // North
                 y += currentSpeed;
@@ -90,12 +94,16 @@ public abstract class Vehicle implements VehicleActions{
     }
 
     public void startEngine(){
-        state.startEngine(this);
+        if (state instanceof StoppedState) {
+            state.startEngine(this);
+        }
     }
 
     public void stopEngine(){
-        state.stopEngine(this);
-        setCurrentSpeed(0);
+        if (state instanceof StartedState) {
+            state.stopEngine(this);
+            currentSpeed = 0;
+        }
     }
 
     public abstract double speedFactor();
@@ -104,7 +112,7 @@ public abstract class Vehicle implements VehicleActions{
         currentSpeed = Math.max(0, Math.min(speed, enginePower));
     }
     private void incrementSpeed(double amount){
-        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount,enginePower);
+        currentSpeed = Math.min(getCurrentSpeed() + (speedFactor() * amount * 0.5), enginePower);
     }
 
     private void decrementSpeed(double amount){
@@ -129,6 +137,18 @@ public abstract class Vehicle implements VehicleActions{
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public VehicleState getState() {
+        return state;
+    }
+
+    private void setState(VehicleState newState) {
+        this.state = newState;
+    }
+
+    public void transitionToState(VehicleState newState) {
+        setState(newState);
     }
 
 }

@@ -20,32 +20,42 @@ public class VehicleManager {
     }
 
     public void startAllVehicles() {
-        for (Vehicle car : vehicles) {
-            car.startEngine();
+        for (Vehicle vehicle : vehicles) {
+            vehicle.startEngine();
         }
     }
 
     public void stopAllVehicles() {
-        for (Vehicle car : vehicles) {
-            car.stopEngine();
+        for (Vehicle vehicle : vehicles) {
+            vehicle.stopEngine();
         }
     }
 
     public void gas(int amount) {
-        double gas = ((double) amount) / 100;
-        for (Vehicle car : vehicles) {
-            car.gas(gas);
+        double gas = ((double) amount) / 200;
+        for (Vehicle vehicle : vehicles) {
+            vehicle.gas(gas);
         }
     }
 
     public void brake(int amount) {
         double brake = ((double) amount) / 100;
-        for (Vehicle car : vehicles) {
-            car.brake(brake);
+        for (Vehicle vehicle : vehicles) {
+            vehicle.brake(brake);
         }
     }
 
     public void removeCar(Vehicle vehicle) {
         vehicles.remove(vehicle);
     }
+
+    public boolean isAnyCarInState(Class<? extends VehicleState> stateClass) {
+        for (Vehicle vehicle : vehicles) {
+            if (stateClass.isInstance(vehicle.getState())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

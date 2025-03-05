@@ -1,7 +1,7 @@
 public class StoppedState implements VehicleState{
     @Override
     public void startEngine(Vehicle vehicle) {
-        vehicle.setState(new StartedState());
+        vehicle.transitionToState(new StartedState());
         System.out.println("Engine started.");
     }
 

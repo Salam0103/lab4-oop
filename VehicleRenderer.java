@@ -19,12 +19,11 @@ public class VehicleRenderer {
      */
     private void loadVehicleImages() {
         try {
-            // Load images for each vehicle type
             vehicleImages.put(Volvo240.class, ImageIO.read(getClass().getResourceAsStream("pics/Volvo240.jpg")));
             vehicleImages.put(Saab95.class, ImageIO.read(getClass().getResourceAsStream("pics/Saab95.jpg")));
             vehicleImages.put(Scania.class, ImageIO.read(getClass().getResourceAsStream("pics/Scania.jpg")));
         } catch (IOException ex) {
-            ex.printStackTrace(); // Handle image loading errors
+            System.out.println("Error loading images: " + ex.getMessage());
         }
     }
 
