@@ -12,6 +12,11 @@ public abstract class Vehicle implements VehicleActions{
     private double y; // car's position on y-axis
     private int direction; // 0=North 1=East 2=South 3=West
 
+    private VehicleState state = new StoppedState();
+    public void setState(VehicleState state) {
+        this.state = state;
+    }
+
     public Vehicle(int nrDoors, double enginePower, Color color, String modelName){
 
         this.nrDoors = nrDoors;
@@ -85,15 +90,19 @@ public abstract class Vehicle implements VehicleActions{
     }
 
     public void startEngine(){
-        currentSpeed = 0.1;
+        state.startEngine(this);
     }
 
     public void stopEngine(){
-        currentSpeed = 0;
+        state.stopEngine(this);
+        setCurrentSpeed(0);
     }
 
     public abstract double speedFactor();
 
+    private void setCurrentSpeed(double speed) {
+        currentSpeed = Math.max(0, Math.min(speed, enginePower));
+    }
     private void incrementSpeed(double amount){
         currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount,enginePower);
     }
@@ -103,10 +112,11 @@ public abstract class Vehicle implements VehicleActions{
     }
 
     public void gas(double amount){
-        if (amount < 0 || amount > 1 ) {
-            throw new IllegalArgumentException("Only accepts values in the range [0,1]");
+        if (state instanceof StartedState) {
+            incrementSpeed(amount);
+        } else {
+            System.out.println("Can't gas while the engine is off");
         }
-        incrementSpeed(amount);
     }
 
     public void brake(double amount){
