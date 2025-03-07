@@ -6,15 +6,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.Map;
 
-// This panel represents the animated part of the view with the car images.
 public class DrawPanel extends JPanel {
-    private final VehicleRenderer vehicleRenderer = new VehicleRenderer();
     private final Map<Vehicle, Point> vehiclePositions = new HashMap<>();
     private final Map<Class<? extends Vehicle>, BufferedImage> vehicleImages = new HashMap<>();
 
-
     BufferedImage volvoWorkshopImage;
-    Point volvoWorkshopPoint = new Point(300,300);
+    Point volvoWorkshopPoint = new Point(300, 300);
 
     public DrawPanel(int x, int y) {
         this.setDoubleBuffered(true);
@@ -41,27 +38,21 @@ public class DrawPanel extends JPanel {
         vehiclePositions.put(vehicle, new Point(x, y));
         repaint();  // Make sure the screen updates when positions change
     }
+
     public void removeVehicle(Vehicle vehicle) {
-        vehiclePositions.remove(vehicle);
+        vehiclePositions.remove(vehicle); // Remove the car from the positions map
         repaint(); // Refresh the panel
     }
-    public boolean checkWorkshopCollision(Vehicle vehicle, VolvoWorkshop workshop) {
-        if (vehicle instanceof Volvo240) {
-            Point vehiclePos = vehiclePositions.get(vehicle);
-            if (vehiclePos != null && vehiclePos.distance(volvoWorkshopPoint) < 50) {
-                try {
-                    workshop.loadCar((Volvo240) vehicle);
-                    vehiclePositions.remove(vehicle);
-                    CarController.getInstance().removeCar(vehicle);  // Remove from CarController
-                    System.out.println("Volvo lastad i Workshop!");
-                } catch (IllegalStateException ex) {
-                    System.out.println("Workshop är full. Kan inte lasta fler bilar.");
-                }
-            }
+
+    public boolean checkWorkshopCollision(Vehicle vehicle) {
+        Point vehiclePos = vehiclePositions.get(vehicle);
+        if (vehiclePos != null) {
+            Rectangle vehicleBounds = new Rectangle(vehiclePos.x, vehiclePos.y, 100, 60); // Assuming car size is 100x60
+            Rectangle workshopBounds = new Rectangle(volvoWorkshopPoint.x, volvoWorkshopPoint.y, volvoWorkshopImage.getWidth(), volvoWorkshopImage.getHeight());
+            return vehicleBounds.intersects(workshopBounds);
         }
         return false;
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {
